@@ -273,7 +273,11 @@ public enum FlutterContacts {
                     if groupIds.contains(group.identifier) {
                         let addRequest = CNSaveRequest()
                         addRequest.addMember(contact, to: group)
-                        try store.execute(addRequest)
+                        do {
+                            try store.execute(addRequest)
+                        } catch let error {
+                            print(error.localizedDescription)
+                        }
                     }
                 }
             }
@@ -527,9 +531,9 @@ public class SwiftFlutterContactsPlugin: NSObject, FlutterPlugin, FlutterStreamH
         case "getGroups":
             DispatchQueue.global(qos: .userInteractive).async {
                 do {
-                    let groups = try FlutterContacts.getGroups()
+                    let groups = FlutterContacts.getGroups()
                     result(groups)
-                } catch {
+                } catch let error {
                     result(FlutterError(
                         code: "unknown error",
                         message: "unknown error",

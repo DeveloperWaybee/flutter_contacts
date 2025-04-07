@@ -20,9 +20,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_contacts: edb1c5ce76aa433e20e6cb14c615f4c0b66e0983
-  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
+  flutter_contacts: 5383945387e7ca37cf963d4be57c21f2fc15ca9f
+  image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
 
 PODFILE CHECKSUM: c4c93c5f6502fe2754f48404d3594bf779584011
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
