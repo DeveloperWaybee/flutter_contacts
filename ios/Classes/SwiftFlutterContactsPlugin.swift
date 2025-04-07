@@ -256,7 +256,11 @@ public enum FlutterContacts {
 
             let saveRequest = CNSaveRequest()
             saveRequest.update(contact)
-            try store.execute(saveRequest)
+            do {
+                try store.execute(saveRequest)
+            } catch let error {
+                print("Update Contact failed: \(error.localizedDescription)")
+            }
 
             // Update group membership
             if withGroups {
@@ -265,7 +269,11 @@ public enum FlutterContacts {
                 for groupIndex in groupMemberships[contact.identifier] ?? [] {
                     let deleteRequest = CNSaveRequest()
                     deleteRequest.removeMember(contact, from: groups[groupIndex])
-                    try store.execute(deleteRequest)
+                    do {
+                        try store.execute(deleteRequest)
+                    } catch let error {
+                        print("Remove Contact to Group failed: \(error.localizedDescription)")
+                    }
                 }
 
                 let groupIds = Set((args["groups"] as! [[String: Any]]).map { Group(fromMap: $0).id })
@@ -276,13 +284,14 @@ public enum FlutterContacts {
                         do {
                             try store.execute(addRequest)
                         } catch let error {
-                            print(error.localizedDescription)
+                            print("Add Contact to Group \(group.identifier) failed: \(error.localizedDescription)")
                         }
                     }
                 }
             }
-
-            return Contact(fromContact: contact).toMap()
+            let updatedContact = Contact(fromContact: contact).toMap()
+            print(updatedContact)
+            return updatedContact
         } else {
             return nil
         }
@@ -503,9 +512,18 @@ public class SwiftFlutterContactsPlugin: NSObject, FlutterPlugin, FlutterStreamH
                 let withGroups = args[1] as! Bool
                 let includeNotesOnIos13AndAbove = args[2] as! Bool
                 do {
+                    print("Updation Started")
                     let contact = try FlutterContacts.update(
                         c, withGroups, includeNotesOnIos13AndAbove
                     )
+                    print("Updation Ended")
+                    if (contact == nil) {
+                        result(FlutterError(
+                            code: "unknown error",
+                            message: "unknown error",
+                            details: ""
+                        ))
+                    }
                     result(contact)
                 } catch {
                     result(FlutterError(
