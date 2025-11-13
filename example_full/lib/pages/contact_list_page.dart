@@ -59,7 +59,16 @@ class _ContactListPageState extends State<ContactListPage>
 
   Future _loadContacts(bool withPhotos) async {
     final contacts = withPhotos
-        ? (await FlutterContacts.getContacts(withThumbnail: true)).toList()
+        ? (await FlutterContacts.getContacts(
+            deduplicateProperties: true,
+            sorted: true,
+            withAccounts: true,
+            withThumbnail: true,
+            withGroups: true,
+            withProperties: true,
+            withPhoto: true,
+          ))
+            .toList()
         : (await FlutterContacts.getContacts()).toList();
     setState(() {
       _contacts = contacts;

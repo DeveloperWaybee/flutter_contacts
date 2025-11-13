@@ -161,8 +161,16 @@ class Contact {
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
         id: (json['id'] as String?) ?? '',
         displayName: (json['displayName'] as String?) ?? '',
-        thumbnail: json['thumbnail'] as Uint8List?,
-        photo: json['photo'] as Uint8List?,
+        thumbnail: json['thumbnail'] is String
+            ? base64Decode(json['thumbnail'] as String)
+            : json['thumbnail'] is Uint8List
+                ? json['thumbnail'] as Uint8List
+                : null,
+        photo: json['photo'] is String
+            ? base64Decode(json['photo'] as String)
+            : json['photo'] is Uint8List
+                ? json['photo'] as Uint8List
+                : null,
         isStarred: (json['isStarred'] as bool?) ?? false,
         name: Name.fromJson(Map<String, dynamic>.from(json['name'] ?? {})),
         phones: ((json['phones'] as List?) ?? [])
@@ -206,6 +214,29 @@ class Contact {
         'displayName': displayName,
         'thumbnail': withThumbnail ? thumbnail : null,
         'photo': withPhoto ? photo : null,
+        'isStarred': isStarred,
+        'name': name.toJson(),
+        'phones': phones.map((x) => x.toJson()).toList(),
+        'emails': emails.map((x) => x.toJson()).toList(),
+        'addresses': addresses.map((x) => x.toJson()).toList(),
+        'organizations': organizations.map((x) => x.toJson()).toList(),
+        'websites': websites.map((x) => x.toJson()).toList(),
+        'socialMedias': socialMedias.map((x) => x.toJson()).toList(),
+        'events': events.map((x) => x.toJson()).toList(),
+        'notes': notes.map((x) => x.toJson()).toList(),
+        'accounts': accounts.map((x) => x.toJson()).toList(),
+        'groups': groups.map((x) => x.toJson()).toList(),
+      });
+
+  Map<String, dynamic> toSavableJson({
+    bool withThumbnail = true,
+    bool withPhoto = true,
+  }) =>
+      Map<String, dynamic>.from({
+        'id': id,
+        'displayName': displayName,
+        'thumbnail': withThumbnail ? base64Encode(thumbnail!) : null,
+        'photo': withPhoto ? base64Encode(photo!) : null,
         'isStarred': isStarred,
         'name': name.toJson(),
         'phones': phones.map((x) => x.toJson()).toList(),
